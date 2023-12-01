@@ -1,0 +1,10 @@
+flask~=3.0.0
+langchain~=0.0.344
+python-dotenv~=1.0.0
+unstructured
+docx2txt==0.8
+azure-core
+azure-identity
+openai==0.28.1
+pymilvus
+tiktoken
