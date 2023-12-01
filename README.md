@@ -33,6 +33,7 @@ $ pip install -r requirements.txt
 
 <b> Run the Project </b>
 
+- Add valid values in  `.env` file.
 - Run plain python application
 ```commandline
 $ python resend_errors.py
