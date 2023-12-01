@@ -3,16 +3,28 @@
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
-from flask import Flask
+from flask import Flask, request
 
-from dataload import load_data, split_data, get_db, get_chain
+import langchain_processing
 
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.get("/")
 def hello_world():
-    return "Hello, World!"
+    return "Welcome to Crosshack APIs"
+
+
+@app.post("/answer")
+def give_me_ans():
+    if request.is_json:
+        body = request.get_json()
+        # res = get_data("What is the main point of the transcript?")
+        res = langchain_processing.get_answer(body["query"])
+        print(res)
+        return res
+
+    return {"error": "Request must be JSON"}, 415
 
 
 def print_hi(name):
@@ -24,28 +36,23 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('PyCharm')
 
-    data = load_data([
+    data = langchain_processing.load_data([
         "https://help.autodesk.com/view/DOCS/ENU/?guid=What_Is_Desktop-Connector",
         "https://milvus.io/docs/overview.md",
         "https://wiki.autodesk.com/display/PDF/Deployment+Schedule",
         "https://wiki.autodesk.com/pages/viewpage.action?pageId=144721761"
     ])
-    print(data)
+    # print(data)
 
-    tokens = split_data(data)
-    print(tokens)
+    tokens = langchain_processing.split_data(data)
+    # print(tokens)
 
-    db = get_db(tokens)
-    print(db)
+    # query = "\nWhat is the main point of the transcript?"
+    # result = langchain_processing.get_chain(tokens)({"query": query})
+    # print(query)
+    # print(result["result"])
 
-    query = "\nWhat is the main point of the transcript?"
-    result = get_chain(db)({"query": query})
-    print(query)
-    print(result["result"])
+    langchain_processing.store_data(tokens)
 
-    query = "\nWhat is the speaker's tone throughout the transcript?"
-    result = get_chain(db)({"query": query})
-    print(query)
-    print(result["result"])
-
-
+    # res = get_data("What is the main point of the transcript?")
+    # print(res)
