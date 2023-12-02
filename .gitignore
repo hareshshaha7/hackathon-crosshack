@@ -5,3 +5,4 @@ Pipfile
 hackathon/
 volumes/
 .DS_Store
+.env
