@@ -1,5 +1,6 @@
 from azure.identity import EnvironmentCredential
 from dotenv import load_dotenv
+from dotenv.main import get_key
 from langchain.chains import RetrievalQA
 from langchain.chat_models import AzureChatOpenAI
 from langchain.document_loaders import Docx2txtLoader, UnstructuredURLLoader
@@ -7,15 +8,15 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Milvus
 
-# Set your Azure AD instance options
-api_base = "https://cog-sandbox-dev-eastus2-001.openai.azure.com/"
-api_type = "azure_ad"
-api_version = "2023-03-15-preview"
-embeddings_deployment = "text-embedding-ada-002-blue"
-embeddings_model = "text-embedding-ada-002"
-llm_deployment = "gpt-35-turbo-blue"
-
 load_dotenv()
+
+# Set your Azure AD instance options
+api_base = get_key(dotenv_path=".env", key_to_get="AZURE_API_BASE")
+api_type = get_key(dotenv_path=".env", key_to_get="AZURE_API_TYPE")
+api_version = get_key(dotenv_path=".env", key_to_get="API_VERSION")
+embeddings_deployment = get_key(dotenv_path=".env", key_to_get="AZURE_EMBEDDINGS_DEPLOYMENT")
+embeddings_model = get_key(dotenv_path=".env", key_to_get="AZURE_EMBEDDINGS_MODEL")
+llm_deployment = get_key(dotenv_path=".env", key_to_get="AZURE_LLM_DEPLOYMENT")
 
 credential = EnvironmentCredential()
 access_token = credential.get_token("https://cognitiveservices.azure.com/.default")
@@ -53,6 +54,7 @@ def load_file(file_path):
     print("Data Loading...Started...✅✅✅")
     # Use the WebBaseLoader to load specified web pages into documents
     loader = Docx2txtLoader(file_path)
+
     data = loader.load()
     return data
 
@@ -63,6 +65,7 @@ def load_url(urls):
     # # Use the WebBaseLoader to load specified web pages into documents
     # loader = WebBaseLoader(urls)
     loader = UnstructuredURLLoader(urls=urls)
+
     data = loader.load()
     return data
 
@@ -78,6 +81,7 @@ def split_data(data):
         chunk_overlap=chunk_overlap,
         separators=separators,
     )
+
     tokens = splitter.split_documents(data)
     return tokens
 
