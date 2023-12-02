@@ -44,7 +44,7 @@ flask --app=main.py run
 <b> Install vector database: Milvus </b>
 
 - To install `docker-compose`
-```
+```commandline
 sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 
 sudo chmod +x /usr/local/bin/docker-compose
@@ -54,9 +54,13 @@ docker-compose version
 
 ```commandline
 wget https://github.com/milvus-io/milvus/releases/download/v2.3.3/milvus-standalone-docker-compose.yml -O docker-compose.yml
+
 sudo docker-compose up -d
+
 docker-compose up -d
+
 docker compose ps
+
 docker port milvus-standalone 19530/tcp
 ```
 -------
