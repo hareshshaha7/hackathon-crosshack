@@ -13,13 +13,13 @@ load_dotenv()
 # Set your Azure AD instance options
 api_base = get_key(dotenv_path=".env", key_to_get="AZURE_API_BASE")
 api_type = get_key(dotenv_path=".env", key_to_get="AZURE_API_TYPE")
-api_version = get_key(dotenv_path=".env", key_to_get="API_VERSION")
+api_version = get_key(dotenv_path=".env", key_to_get="AZURE_API_VERSION")
 embeddings_deployment = get_key(dotenv_path=".env", key_to_get="AZURE_EMBEDDINGS_DEPLOYMENT")
 embeddings_model = get_key(dotenv_path=".env", key_to_get="AZURE_EMBEDDINGS_MODEL")
 llm_deployment = get_key(dotenv_path=".env", key_to_get="AZURE_LLM_DEPLOYMENT")
 
 credential = EnvironmentCredential()
-access_token = credential.get_token("https://cognitiveservices.azure.com/.default")
+access_token = credential.get_token(get_key(dotenv_path=".env", key_to_get="ACCESS_TOKEN_SCOPE"))
 
 # Define embeddings
 embeddings = OpenAIEmbeddings(
