@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 @app.get("/")
 def hello_world():
-    return "Welcome to CrossHack APIs"
+    return "Welcome to CrossHack APIs."
 
 
 ALLOWED_EXTENSIONS = {'docx'}
@@ -28,12 +28,12 @@ def allowed_file(filename):
 def give_me_data():
     # check if the post request has the file part
     if 'file' not in request.files:
-        resp = jsonify({'error': 'No file part in the request'})
-        resp.status_code = 400
+        resp = jsonify({'error': 'No file part in the request.'})
+        resp.status_code = 412
         return resp
     file = request.files['file']
     if file.filename == '':
-        resp = jsonify({'error': 'No file selected for uploading'})
+        resp = jsonify({'error': 'No file selected for uploading.'})
         resp.status_code = 400
         return resp
     if file and allowed_file(file.filename):
@@ -48,23 +48,34 @@ def give_me_data():
         langchain_processing.store_data(tokens)
 
         os.remove(os_path)
-        resp = jsonify({'error': 'File successfully uploaded'})
+        resp = jsonify({'error': 'File successfully uploaded.'})
         resp.status_code = 201
         return resp
     else:
-        resp = jsonify({'error': 'Allowed file type is docx'})
-        resp.status_code = 400
+        resp = jsonify({'error': 'Allowed file type is docx.'})
+        resp.status_code = 415
         return resp
 
 
 @app.post("/get_reply")
 def give_me_ans():
-    if request.is_json:
-        body = request.get_json()
-        res = langchain_processing.get_answer(body["query"])
-        print(res)
-        return res
+    if not request.is_json:
+        resp = jsonify({'error': 'Request must be JSON.'})
+        resp.status_code = 415
+        return resp
 
-    resp = jsonify({'error': 'Request must be JSON'})
-    resp.status_code = 415
-    return resp
+    body = request.get_json()
+    if "query" not in body:
+        resp = jsonify({'error': 'Body should contain \'query\' attribute.'})
+        resp.status_code = 412
+        return resp
+
+    question = body["query"]
+    if not question:
+        resp = jsonify({'error': '\'query\' can not be empty.'})
+        resp.status_code = 400
+        return resp
+
+    answer = langchain_processing.get_answer(question)
+    print(answer)
+    return answer
